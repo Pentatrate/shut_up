@@ -1,0 +1,8 @@
+{
+	"id": "shut_up",
+	"name": "Shut Up",
+	"version": "1.0.0",
+	"author": "Pentatrate",
+	"description": "Removes annoying logs",
+	"config": {}
+}
