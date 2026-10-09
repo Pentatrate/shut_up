@@ -1,6 +1,6 @@
 [manifest]
 dump_lua = true
-priority = 0
+priority = 1
 version = "1.0.0"
 
 # Environments ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
@@ -51,6 +51,15 @@ times = 1
 match_indent = true
 pattern = '''log('importing imgui')'''
 payload = '''-- log('importing imgui')'''
+position = "at"
+target = "main.lua"
+times = 1
+
+[[patches]]
+[patches.pattern]
+match_indent = true
+pattern = '''log("setting up controls")'''
+payload = '''-- log("setting up controls")'''
 position = "at"
 target = "main.lua"
 times = 1
@@ -106,15 +115,6 @@ times = 2
 [[patches]]
 [patches.pattern]
 match_indent = true
-pattern = '''log('loaded event "'..info.name..'" ('..info.event..eType..')')'''
-payload = '''-- log('loaded event "'..info.name..'" ('..info.event..eType..')')'''
-position = "at"
-target = "obj/GameManager.lua"
-times = 1
-
-[[patches]]
-[patches.pattern]
-match_indent = true
 pattern = '''log("made entity ".. name .." from " ..fname)'''
 payload = '''-- log("made entity ".. name .." from " ..fname)'''
 position = "at"
@@ -124,19 +124,47 @@ times = 1
 [[patches]]
 [patches.pattern]
 match_indent = true
-pattern = '''--load states'''
-payload = '''log:setEnvironment("BBP_silent")'''
+pattern = '''function basestate.load(name)'''
+payload = '''
+do
+	local temp = basestate.fromPath
+	basestate.fromPath = function(...)
+		log:setEnvironment("BBP_silent")
+		temp(...)
+		log:setEnvironment()
+	end
+end
+'''
 position = "before"
-target = "preload/states.lua"
+target = "lib/basestate.lua"
 times = 1
 
 [[patches]]
 [patches.pattern]
 match_indent = true
-pattern = '''bs.new('JoystickColorCalibration')'''
-payload = '''log:setEnvironment()'''
+pattern = '''log('loaded event "'..info.name..'" ('..info.event..eType..')')'''
+payload = '''-- log('loaded event "'..info.name..'" ('..info.event..eType..')')'''
+position = "at"
+target = "obj/GameManager.lua"
+times = 1
+
+# Loading custom events ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
+[[patches]]
+[patches.pattern]
+match_indent = true
+pattern = '''findFiles('levelformat/events')'''
+payload = '''log:setEnvironment("BBP_silent")'''
 position = "after"
-target = "preload/states.lua"
+target = "obj/GameManager.lua"
+times = 1
+
+[[patches]]
+[patches.pattern]
+match_indent = true
+pattern = '''for i,v in ipairs(eList) do'''
+payload = '''log:setEnvironment()'''
+position = "before"
+target = "obj/GameManager.lua"
 times = 1
 
 # Play level ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
