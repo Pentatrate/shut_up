@@ -10,8 +10,6 @@ by Pentatrate
 
 ## Info
 
-Requires API Mod Utilitools by Pentatrate
-
 More up to date info about this mod can be found in the [beatblock modding discord server (invite)](https://discord.gg/VDvPUSCdGZ)
 It has a dedicated post named `Shut Up` in the `ea-mods` forum
 
